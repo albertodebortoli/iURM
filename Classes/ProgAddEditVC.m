@@ -25,7 +25,6 @@
 																	 action:@selector(dismissButton)];
 	
 	[self.navigationItem setLeftBarButtonItem:dismissButton];
-	[dismissButton release];
 	
 	UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] initWithTitle:@"Save"
 																   style:UIBarButtonItemStyleDone
@@ -33,7 +32,6 @@
 																  action:@selector(saveButton)];
 	
 	[self.navigationItem setRightBarButtonItem:saveButton];
-	[saveButton release];
 	
 	// edit mode
 	if (editMode)
@@ -88,7 +86,6 @@
                                            otherButtonTitles:nil];
 			
 			[alert show];
-			[alert release];
 		}
 		
 		else{
@@ -101,7 +98,6 @@
 			NSArray *newEntry = [NSArray arrayWithObjects: tfName.text, tfNote.text, instructions, nil];
 			[parent.programsArray insertObject:newEntry atIndex:index];
 			[self.navigationController dismissModalViewControllerAnimated:YES];
-			[instructions release];
 			
 			[parent.tableList reloadData];
 		}
@@ -141,7 +137,7 @@ titleForFooterInSection:(NSInteger)section {
 
   UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
   if (cell == nil)
-    cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier] autorelease];
+    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
     
 	if (indexPath.row == 0){
 		cell.textLabel.text = @"Name";
@@ -201,9 +197,5 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
   // e.g. self.myOutlet = nil;
 }
 
-- (void)dealloc {
-  parent = nil;
-  [super dealloc];
-}
 
 @end

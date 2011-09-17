@@ -39,7 +39,7 @@
 - (IBAction)saveButton;
 
 
-@property(nonatomic, retain) ProgDetailsVC *parent;
+@property(nonatomic, strong) ProgDetailsVC *parent;
 @property(nonatomic) int index;
 @property(nonatomic) BOOL editMode;
 

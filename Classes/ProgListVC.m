@@ -27,7 +27,6 @@
 	UIBarButtonItem *temporaryBarButtonItem=[[UIBarButtonItem alloc] init];
 	temporaryBarButtonItem.title=@"List";
 	self.navigationItem.backBarButtonItem = temporaryBarButtonItem;
-	[temporaryBarButtonItem release];
 	
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 	NSString *documentsDirectory = [paths objectAtIndex:0];
@@ -36,14 +35,12 @@
 	
 	UIBarButtonItem *addButton = [[UIBarButtonItem	alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addProgram)];
 	[self.navigationItem setRightBarButtonItem:addButton];
-	[addButton release];
 	
 	UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeInfoLight]; 
 	[infoButton addTarget:self action:@selector(showInfo) forControlEvents:UIControlEventTouchUpInside];
 	
 	UIBarButtonItem *buttonInfo = [[UIBarButtonItem alloc] initWithCustomView:infoButton];
 	[self.navigationItem setLeftBarButtonItem:buttonInfo];
-  [buttonInfo release];
 	tableList.separatorColor = [UIColor viewFlipsideBackgroundColor];
 	
   [super viewDidLoad];
@@ -67,7 +64,6 @@
 	controller.delegate = self;
 	controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
 	[self presentModalViewController:controller animated:YES];
-	[controller release];
 }
 
 - (IBAction)addProgram {
@@ -80,8 +76,6 @@
 	pad.editMode = NO;
 	UINavigationController *navigation = [[UINavigationController alloc] initWithRootViewController:pad];
 	[self presentModalViewController:navigation animated:YES];
-	[pad release];
-	[navigation release];
 }
 
 
@@ -139,7 +133,7 @@
   
   UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
   if (cell == nil) {
-      cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
+      cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
   }
   
   cell.textLabel.text = [[programsArray objectAtIndex:indexPath.row] objectAtIndex:0];
@@ -217,7 +211,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	pd.index = indexPath.row;
 	
 	[self.navigationController pushViewController:pd animated:YES];
-	[pd release];
 }
 
 
@@ -235,11 +228,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
   // e.g. self.myOutlet = nil;
 }
 
-- (void)dealloc {
-	[programsArray release];
-  [tableList release];
-  [super dealloc];
-}
 
 
 @end

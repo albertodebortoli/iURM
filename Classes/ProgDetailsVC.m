@@ -30,7 +30,6 @@
 	
 	UIBarButtonItem *addButton = [[UIBarButtonItem	alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addInstruction)];
 	[self.navigationItem setRightBarButtonItem:addButton];
-	[addButton release];
 	
 	[tableInstructions setEditing:YES animated:YES];
 	[tableInstructions setBackgroundColor:[UIColor clearColor]];
@@ -54,8 +53,6 @@
 	iad.editMode = NO;
 	UINavigationController *navigation = [[UINavigationController alloc] initWithRootViewController:iad];
 	[self presentModalViewController:navigation animated:YES];
-	[iad release];
-	[navigation release];		
 }
 
 - (IBAction)runProgram {
@@ -65,8 +62,6 @@
 	vc.parent = self;
 	UINavigationController *navigation = [[UINavigationController alloc] initWithRootViewController:vc];
 	[self presentModalViewController:navigation animated:YES];
-	[vc release];
-	[navigation release];
 }
 
 
@@ -92,7 +87,7 @@
   
   UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
   if (cell == nil) {
-      cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+      cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
   }
   
 	
@@ -168,10 +163,9 @@ canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
 moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 	  toIndexPath:(NSIndexPath *)toIndexPath {
 	
-  NSMutableArray *instructionToMove = [[instructions objectAtIndex:fromIndexPath.row] retain];
+  NSMutableArray *instructionToMove = [instructions objectAtIndex:fromIndexPath.row];
   [instructions removeObjectAtIndex:fromIndexPath.row];
   [instructions insertObject:instructionToMove atIndex:toIndexPath.row];
-  [instructionToMove release];
 }
 
 /*
@@ -197,8 +191,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	iad.editMode = YES;
 	UINavigationController *navigation = [[UINavigationController alloc] initWithRootViewController:iad];
 	[self presentModalViewController:navigation animated:YES];
-	[iad release];
-	[navigation release];
 }
 
 
@@ -217,11 +209,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 
-- (void)dealloc {
-  parent = nil;
-  [tableInstructions release];
-  [super dealloc];
-}
 
 
 @end

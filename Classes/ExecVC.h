@@ -51,8 +51,8 @@
 - (void)programEndedAlert;
 - (NSMutableArray *)calculateUsedRegisters;
 
-@property(nonatomic, retain) UIScrollView *scrollView;
-@property(nonatomic, retain) ProgDetailsVC *parent;
-@property(nonatomic, retain) UIPickerView *picker;
+@property(nonatomic, strong) UIScrollView *scrollView;
+@property(nonatomic, strong) ProgDetailsVC *parent;
+@property(nonatomic, strong) UIPickerView *picker;
 
 @end

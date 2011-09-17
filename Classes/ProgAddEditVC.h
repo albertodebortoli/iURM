@@ -24,7 +24,7 @@
 - (IBAction)dismissButton;
 - (IBAction)saveButton;
 
-@property(nonatomic, retain) ProgListVC *parent;
+@property(nonatomic, strong) ProgListVC *parent;
 @property(nonatomic) int index;
 @property(nonatomic) BOOL editMode;
 

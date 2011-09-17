@@ -22,7 +22,7 @@
 - (IBAction)showInfo;
 - (void)saveToDB;
 
-@property (nonatomic, retain) NSMutableArray *programsArray;
-@property (nonatomic, retain) IBOutlet UITableView *tableList;
+@property (nonatomic, strong) NSMutableArray *programsArray;
+@property (nonatomic, strong) IBOutlet UITableView *tableList;
 
 @end

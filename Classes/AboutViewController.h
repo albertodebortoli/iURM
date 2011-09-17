@@ -13,12 +13,12 @@
 
 
 @interface AboutViewController : UIViewController {
-	id <AboutViewControllerDelegate> delegate;
+	id <AboutViewControllerDelegate> __unsafe_unretained delegate;
 }
 
 - (IBAction)done;
 
-@property(nonatomic, assign) id <AboutViewControllerDelegate> delegate;
+@property(nonatomic, unsafe_unretained) id <AboutViewControllerDelegate> delegate;
 
 @end
 

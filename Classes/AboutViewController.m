@@ -43,10 +43,5 @@
 	// e.g. self.myOutlet = nil;
 }
 
-- (void)dealloc {
-  delegate = nil;
-  [super dealloc];
-}
-
 
 @end

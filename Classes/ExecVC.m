@@ -36,7 +36,6 @@
 									  action:@selector(dismissButton)];
 	
 	[self.navigationItem setRightBarButtonItem:dismissButton];
-	[dismissButton release];
 	
 	program = [parent.parent.programsArray objectAtIndex:parent.index];
 	instructions = [program objectAtIndex:2];
@@ -90,12 +89,8 @@
 		[view addSubview:lblNumberRegister];
 		[view addSubview:txtValueRegister];
 		
-    [image release];
-    [lblNumberRegister release];
-    [txtValueRegister release];
     
 		[scrollView addSubview:view];
-    [view release];
 	}
 	
 	int rows = [usedRegisters count] / THUMBNAIL_COLS;
@@ -386,7 +381,6 @@
 						  otherButtonTitles:nil];
 	
 	[alert show];
-	[alert release];
 }
 
 - (void)enableButtonsForAnimation:(BOOL)state{
@@ -597,12 +591,6 @@ numberOfRowsInComponent:(NSInteger)component {
 }
 
 
-- (void)dealloc {
-  parent = nil;
-  [scrollView release];
-  [picker release];
-  [super dealloc];
-}
 
 
 @end

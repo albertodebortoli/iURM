@@ -27,8 +27,8 @@
 - (IBAction)addInstruction;
 - (IBAction)runProgram;
 
-@property(nonatomic, retain) ProgListVC *parent;
-@property(nonatomic, retain) UITableView *tableInstructions;
+@property(nonatomic, strong) ProgListVC *parent;
+@property(nonatomic, strong) UITableView *tableInstructions;
 @property(nonatomic) int index;
 
 @end

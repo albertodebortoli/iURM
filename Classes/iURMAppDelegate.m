@@ -24,7 +24,6 @@
                     finished:(NSNumber *)finished
                      context:(void *)context {
 	[splashView removeFromSuperview];
-	[splashView release];
 }
 
 
@@ -122,12 +121,6 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
    */
 }
 
-- (void)dealloc {
-  referenceToProgListForSaving = nil;
-	[navigationController release];
-	[window release];
-	[super dealloc];
-}
 
 
 @end

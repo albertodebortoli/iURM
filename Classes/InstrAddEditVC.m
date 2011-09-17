@@ -29,7 +29,6 @@
 																	 action:@selector(dismissButton)];
 	
 	[self.navigationItem setLeftBarButtonItem:dismissButton];
-	[dismissButton release];
 	
 	UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] initWithTitle:@"Save" 
 																   style:UIBarButtonItemStyleDone 
@@ -37,7 +36,6 @@
 																  action:@selector(saveButton)];
 	
 	[self.navigationItem setRightBarButtonItem:saveButton];
-	[saveButton release];
 	
 	// edit mode
 	if (editMode) {
@@ -255,10 +253,6 @@
   // e.g. self.myOutlet = nil;
 }
 
-- (void)dealloc {
-  parent = nil;
-  [super dealloc];
-}
 
 
 @end
