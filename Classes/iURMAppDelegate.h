@@ -10,15 +10,11 @@
 
 @class ProgListVC;
 
-@interface iURMAppDelegate : NSObject <UIApplicationDelegate> {
-    
-  UIWindow *window;
-	UIImageView *splashView;
-  UINavigationController *navigationController;
+@interface iURMAppDelegate : NSObject <UIApplicationDelegate> {    
+    UIWindow *window;
+    UINavigationController *navigationController;
 	ProgListVC *referenceToProgListForSaving;
 }
-
-- (void)startupAnimationDone:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context;
 
 @property (nonatomic, strong) IBOutlet UIWindow *window;
 @property (nonatomic, strong) IBOutlet UINavigationController *navigationController;

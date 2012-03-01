@@ -10,15 +10,14 @@
 #import "ProgListVC.h"
 #import "ProgDetailsVC.h"
 
-
 @implementation InstrAddEditVC
 
-@synthesize parent, index, editMode;
+@synthesize parent;
+@synthesize index;
+@synthesize editMode;
 
-
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-- (void)viewDidLoad {
-	
+- (void)viewDidLoad
+{	
 	program = [parent.parent.programsArray objectAtIndex:parent.index];
 	self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     instructions = [program objectAtIndex:2];
@@ -64,7 +63,6 @@
 			argumentThree = [[[instructions objectAtIndex:index] objectAtIndex:3] intValue];
 		}
 		
-		
 		tfArgumentOne.text = [NSString stringWithFormat:@"%d", argumentOne];
 		tfArgumentTwo.text = [NSString stringWithFormat:@"%d", argumentTwo];
 		tfArgumentThree.text = [NSString stringWithFormat:@"%d", argumentThree];
@@ -82,14 +80,13 @@
 	
 	[tfArgumentOne becomeFirstResponder];
 	
-  [super viewDidLoad];
+    [super viewDidLoad];
 }
-
 
 #pragma mark - Logic methods
 
-- (void)setTextFieldVisible {
-	
+- (void)setTextFieldVisible
+{	
 	if ([typeOfInstruction isEqualToString:@"Z"]) {
 		[UIView beginAnimations:nil context:nil];
 		[UIView setAnimationDuration:0.75];
@@ -102,7 +99,7 @@
 		tfArgumentOne.frame = CGRectMake(120, 142, 80, 31);
 		[UIView commitAnimations];
 	}
-  
+    
 	if ([typeOfInstruction isEqualToString:@"S"]) {
 		[UIView beginAnimations:nil context:nil];
 		[UIView setAnimationDuration:0.75];
@@ -115,7 +112,7 @@
 		tfArgumentOne.frame = CGRectMake(120, 142, 80, 31);
 		[UIView commitAnimations];
 	}
-  
+    
 	if ([typeOfInstruction isEqualToString:@"T"]) {
 		[UIView beginAnimations:nil context:nil];
 		[UIView setAnimationDuration:0.75];
@@ -137,7 +134,7 @@
 		tfArgumentThree.alpha = 0.0;
 		[UIView commitAnimations];
 	}
-  
+    
 	if ([typeOfInstruction isEqualToString:@"J"]) {
 		[UIView beginAnimations:nil context:nil];
 		[UIView setAnimationDuration:0.75];
@@ -166,14 +163,12 @@
 		tfArgumentThree.alpha = 1.0;
 		[UIView commitAnimations];
 	}
-	
 }
-
 
 #pragma mark - Actions
 
-- (IBAction)changeTypeOfInstruction {
-	
+- (IBAction)changeTypeOfInstruction
+{	
 	if (sgmTypeOfInstruction.selectedSegmentIndex == 0)
 		typeOfInstruction = @"Z";
 	
@@ -189,13 +184,13 @@
 	[self setTextFieldVisible];
 }
 
-- (IBAction)dismissButton {
-	
+- (IBAction)dismissButton
+{
 	[self.navigationController dismissModalViewControllerAnimated:YES];
 }
 
-- (IBAction)saveButton {
-	
+- (IBAction)saveButton
+{	
 	argumentOne = [tfArgumentOne.text intValue];
 	argumentTwo = [tfArgumentTwo.text intValue];
 	argumentThree = [tfArgumentThree.text intValue];
@@ -238,21 +233,16 @@
 	[parent.tableInstructions reloadData];
 }
 
-
 #pragma mark - Memory management
 
-- (void)didReceiveMemoryWarning {
-  // Releases the view if it doesn't have a superview.
-  [super didReceiveMemoryWarning];
-  // Release any cached data, images, etc that aren't in use.
-}
-
 - (void)viewDidUnload {
-  [super viewDidUnload];
-  // Release any retained subviews of the main view.
-  // e.g. self.myOutlet = nil;
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+    tfArgumentOne = nil;
+	tfArgumentTwo = nil;
+	tfArgumentThree = nil;
+	sgmTypeOfInstruction = nil;
+	lblInstuction = nil;
 }
-
-
 
 @end

@@ -10,18 +10,16 @@
 #import "iURMAppDelegate.h"
 #include <unistd.h>
 
-
 @implementation ProgListVC
 
-
-@synthesize programsArray, tableList;
-
+@synthesize programsArray;
+@synthesize tableList;
 
 #pragma mark - View lifecycle
 
-- (void)viewDidLoad {
-  
-  [self setTitle:@"iURM Program List"];
+- (void)viewDidLoad
+{  
+    [self setTitle:@"iURM Program List"];
 	self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
 	
 	UIBarButtonItem *temporaryBarButtonItem=[[UIBarButtonItem alloc] init];
@@ -43,31 +41,28 @@
 	[self.navigationItem setLeftBarButtonItem:buttonInfo];
 	tableList.separatorColor = [UIColor viewFlipsideBackgroundColor];
 	
-  [super viewDidLoad];
+    [super viewDidLoad];
 }
-
 
 #pragma mark - Delegate methods
 
-- (void)AboutViewControllerDidFinish:(AboutViewController *)controller {
-    
+- (void)AboutViewControllerDidFinish:(AboutViewController *)controller
+{
 	[self dismissModalViewControllerAnimated:YES];
 }
 
-
 #pragma mark - Actions
 
-- (IBAction)showInfo {
-  
-	AboutViewController *controller;
-	controller = [[AboutViewController alloc] initWithNibName:@"AboutView" bundle:nil];
+- (IBAction)showInfo
+{
+	AboutViewController *controller = [[AboutViewController alloc] initWithNibName:@"AboutView" bundle:nil];
 	controller.delegate = self;
 	controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
 	[self presentModalViewController:controller animated:YES];
 }
 
-- (IBAction)addProgram {
-	
+- (IBAction)addProgram
+{	
 	ProgAddEditVC *pad = [[ProgAddEditVC alloc] initWithNibName:@"ProgAddEditVC" bundle:nil];
 	pad.parent = self;
 	
@@ -78,11 +73,10 @@
 	[self presentModalViewController:navigation animated:YES];
 }
 
-
 #pragma mark - Logic methods
 
-- (void)saveToDB {
-	
+- (void)saveToDB
+{	
 	//store in the plist files
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 	NSString *documentsDirectory = [paths objectAtIndex:0];
@@ -90,66 +84,41 @@
 	[programsArray writeToFile:pathDB atomically:YES];
 }
 
-/*
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-}
-*/
-/*
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-}
-*/
-/*
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-}
-*/
-/*
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-}
-*/
-
-
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    // Return the number of sections.
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView
- numberOfRowsInSection:(NSInteger)section {
-    // Return the number of rows in the section.
+ numberOfRowsInSection:(NSInteger)section
+{
     return [programsArray count];
 }
 
-// Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView
-         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{    
+    static NSString *CellIdentifier = @"Cell";
     
-  static NSString *CellIdentifier = @"Cell";
-  
-  UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-  if (cell == nil) {
-      cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-  }
-  
-  cell.textLabel.text = [[programsArray objectAtIndex:indexPath.row] objectAtIndex:0];
-	//cell.detailTextLabel.font = [UIFont systemFontOfSize:11];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    }
+    
+    cell.textLabel.text = [[programsArray objectAtIndex:indexPath.row] objectAtIndex:0];
 	cell.detailTextLabel.text = [[programsArray objectAtIndex:indexPath.row] objectAtIndex:1];
 	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-
-  return cell;
+    
+    return cell;
 }
-
 
 - (void)tableView:(UITableView *)tableView
   willDisplayCell:(UITableViewCell *)cell
-forRowAtIndexPath:(NSIndexPath *)indexPath {
-  
-	if (indexPath.row == 0 || indexPath.row%2 == 0) {
+forRowAtIndexPath:(NSIndexPath *)indexPath
+{    
+	if (indexPath.row == 0 || indexPath.row % 2 == 0) {
 		UIColor *altCellColor = [UIColor colorWithWhite:0.8 alpha:1.0];
 		cell.backgroundColor = altCellColor;
 	}
@@ -161,23 +130,15 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (CGFloat)tableView:(UITableView *)tableView
-heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-  
+heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{    
 	return 54;
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
 - (void)tableView:(UITableView *)tableView
 commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
-forRowAtIndexPath:(NSIndexPath *)indexPath {
-	
+forRowAtIndexPath:(NSIndexPath *)indexPath
+{	
 	if (editingStyle == UITableViewCellEditingStyleDelete) {
 		
 		[programsArray removeObjectAtIndex:indexPath.row];
@@ -185,27 +146,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	}
 }
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView
-didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-  
-	// Navigation logic may go here -- for example, create and push another view controller.
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{    
 	ProgDetailsVC *pd = [[ProgDetailsVC alloc] initWithNibName:@"ProgDetailsVC" bundle:nil];
 	pd.parent = self;
 	pd.index = indexPath.row;
@@ -213,22 +158,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	[self.navigationController pushViewController:pd animated:YES];
 }
 
-
 #pragma mark - Memory management
 
-- (void)didReceiveMemoryWarning {
-  // Releases the view if it doesn't have a superview.
-  [super didReceiveMemoryWarning];
-  
-  // Relinquish ownership any cached data, images, etc that aren't in use.
+- (void)viewDidUnload
+{
+    // Release any retained subviews of the main view.
+    tableList = nil;
 }
-
-- (void)viewDidUnload {
-  // Release any retained subviews of the main view.
-  // e.g. self.myOutlet = nil;
-}
-
-
 
 @end
 

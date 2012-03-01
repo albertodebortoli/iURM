@@ -9,15 +9,14 @@
 #import "ProgAddEditVC.h"
 #import "ProgListVC.h"
 
-
 @implementation ProgAddEditVC
 
-@synthesize parent, index, editMode;
+@synthesize parent;
+@synthesize index;
+@synthesize editMode;
 
-
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-- (void)viewDidLoad {
-	
+- (void)viewDidLoad
+{	
 	self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
 	UIBarButtonItem *dismissButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" 
 																	  style:UIBarButtonItemStylePlain
@@ -36,7 +35,7 @@
 	// edit mode
 	if (editMode)
 		[self setTitle:@"Modify Program"];
-  
+    
 	// add mode
 	else
 		[self setTitle:@"Add Program"];
@@ -63,32 +62,29 @@
 	
 	[tfName becomeFirstResponder];
 	
-  [super viewDidLoad];
+    [super viewDidLoad];
 }
-
 
 #pragma mark - Actions
 
-- (IBAction)dismissButton {
-	
+- (IBAction)dismissButton
+{	
 	[self.navigationController dismissModalViewControllerAnimated:YES];
 }
 
-- (IBAction)saveButton {
-	
+- (IBAction)saveButton
+{	
 	if ("!editMode") {
-		
 		if ([tfName.text isEqualToString:@""] || [tfNote.text isEqualToString:@""] || [tfNumberOfInstruction.text isEqualToString:@""]) {
 			UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Missing information"
-                                                     message:@"Please fill all the fields."
-                                                    delegate:nil
-                                           cancelButtonTitle:@"Ok"
-                                           otherButtonTitles:nil];
+                                                           message:@"Please fill all the fields."
+                                                          delegate:nil
+                                                 cancelButtonTitle:@"Ok"
+                                                 otherButtonTitles:nil];
 			
 			[alert show];
 		}
-		
-		else{
+		else {
 			NSMutableArray *instructions = [[NSMutableArray alloc] initWithArray:nil];
 			NSArray *instruction;
 			for (int i=0; i<[tfNumberOfInstruction.text intValue]; i++) {
@@ -102,53 +98,50 @@
 			[parent.tableList reloadData];
 		}
 	}
-  
 }
 
+#pragma mark - Table view data source
 
-#pragma mark -
-#pragma mark Table view data source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-  // Return the number of sections.
-  return 1;
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView
- numberOfRowsInSection:(NSInteger)section {
-  // Return the number of instructions in the selected program
+ numberOfRowsInSection:(NSInteger)section
+{
 	return 3;
 }
 
 - (NSString *)tableView:(UITableView *)tableView 
-titleForFooterInSection:(NSInteger)section {
-  
-	if (editMode)
-    return @"edit the data for the selected program";
-	else // new program
+titleForFooterInSection:(NSInteger)section
+{    
+	if (editMode) {
+        return @"edit the data for the selected program";
+	} else { // new program
 		return @"fill the fields with the data for the new program";
+    }
 }
 
-// Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView
-         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{    
+    static NSString *CellIdentifier = @"Cell";
     
-  static NSString *CellIdentifier = @"Cell";
-
-  UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-  if (cell == nil)
-    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil)
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
     
 	if (indexPath.row == 0){
 		cell.textLabel.text = @"Name";
 		[cell addSubview:tfName];
 	}
-  
+    
 	if (indexPath.row == 1){
 		cell.textLabel.text = @"Note";
 		[cell addSubview:tfNote];
 	}
-  
+    
 	if (indexPath.row == 2){
 		cell.textLabel.text = @"# of Instructions";
 		[cell addSubview:tfNumberOfInstruction];
@@ -156,46 +149,34 @@ titleForFooterInSection:(NSInteger)section {
 	
 	[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
 	
-  return cell;
+    return cell;
 }
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-	
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{	
 	[textField resignFirstResponder];
 	return YES;
 }
 
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView
-canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-  // Return NO if you do not want the specified item to be editable.
-  return YES;
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
 }
 
+#pragma mark - Table view delegate
 
-#pragma mark -
-#pragma mark Table view delegate
-
-- (void)tableView:(UITableView *)tableView
-didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{    
 	// nothing to do
 }
 
-
 #pragma mark - Memory management
 
-- (void)didReceiveMemoryWarning {
-  // Releases the view if it doesn't have a superview.
-  [super didReceiveMemoryWarning];
-  // Release any cached data, images, etc that aren't in use.
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+    // e.g. self.myOutlet = nil;
 }
-
-- (void)viewDidUnload {
-  [super viewDidUnload];
-  // Release any retained subviews of the main view.
-  // e.g. self.myOutlet = nil;
-}
-
 
 @end

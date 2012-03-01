@@ -11,7 +11,7 @@
 @class ProgDetailsVC;
 
 @interface InstrAddEditVC : UIViewController <UITextFieldDelegate> {
-
+    
 	ProgDetailsVC *parent;
 	int index;
 	BOOL editMode;
@@ -29,15 +29,13 @@
 	IBOutlet UILabel *lblInstuction;
 	
 	NSMutableArray *program;
-  NSMutableArray *instructions;
+    NSMutableArray *instructions;
 }
 
 - (void)setTextFieldVisible;
-
 - (IBAction)changeTypeOfInstruction;
 - (IBAction)dismissButton;
 - (IBAction)saveButton;
-
 
 @property(nonatomic, strong) ProgDetailsVC *parent;
 @property(nonatomic) int index;

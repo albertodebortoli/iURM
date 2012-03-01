@@ -10,9 +10,8 @@
 
 @class ProgListVC;
 
-
 @interface ProgDetailsVC : UIViewController <UITableViewDelegate, UITableViewDataSource> {
-
+    
 	ProgListVC *parent;
 	int index;
 	
@@ -21,7 +20,7 @@
 	IBOutlet UIButton *runButton;
 	
 	NSArray *program;
-  NSMutableArray *instructions;
+    NSMutableArray *instructions;
 }
 
 - (IBAction)addInstruction;

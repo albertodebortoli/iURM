@@ -13,8 +13,9 @@
 
 @implementation ExecVC
 
-@synthesize scrollView, parent, picker;
-
+@synthesize scrollView;
+@synthesize parent;
+@synthesize picker;
 
 #define PADDING_TOP 4
 #define PADDING 4
@@ -22,24 +23,20 @@
 #define THUMBNAIL 150
 #define THUMBNAIL_75 75
 
-
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-- (void)viewDidLoad {
-	
+- (void)viewDidLoad
+{	
 	[self setTitle:@"Run Program!"];
 	self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
 	
-	UIBarButtonItem *dismissButton = [[UIBarButtonItem alloc]
-									  initWithTitle:@"Done" 
-									  style:UIBarButtonItemStyleDone 
-									  target:self 
-									  action:@selector(dismissButton)];
+	UIBarButtonItem *dismissButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" 
+                                                                      style:UIBarButtonItemStyleDone 
+                                                                     target:self 
+                                                                     action:@selector(dismissButton)];
 	
 	[self.navigationItem setRightBarButtonItem:dismissButton];
 	
 	program = [parent.parent.programsArray objectAtIndex:parent.index];
 	instructions = [program objectAtIndex:2];
-	
 	
 	// calculates the number of used registers
 	usedRegisters = [[NSMutableArray alloc] initWithArray:nil];
@@ -48,7 +45,6 @@
 	buttonForBackground.tag = -2;
 	
 	for (int i = 0; i < [usedRegisters count]; i++) {
-		
 		UIView *view = [[UIView alloc] initWithFrame:CGRectMake(THUMBNAIL_75 * (i % THUMBNAIL_COLS) + PADDING * (i % THUMBNAIL_COLS) + PADDING,
 																THUMBNAIL_75 * (i / THUMBNAIL_COLS) + PADDING * (i / THUMBNAIL_COLS) + PADDING + PADDING_TOP,
 																THUMBNAIL_75, THUMBNAIL_75)];
@@ -57,7 +53,6 @@
 		// a little hack, because tag 0 can't be used but register 0 can exists
 		// (the greatest index of register the programs can used is indicated in the offset (1000, can be changed)
 		view.tag = [[usedRegisters objectAtIndex:i] intValue] + 1000;
-		
 		
 		UIImageView *image = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, THUMBNAIL_75, THUMBNAIL_75)];
 		[image setImage:[UIImage imageNamed:@"PC.png"]];
@@ -88,8 +83,7 @@
 		[view addSubview:image];
 		[view addSubview:lblNumberRegister];
 		[view addSubview:txtValueRegister];
-		
-    
+        
 		[scrollView addSubview:view];
 	}
 	
@@ -105,13 +99,13 @@
 	[imgProgramCounter setImage:[UIImage imageNamed:@"PC.png"]];
 	
 	[startButton setImage:[UIImage imageNamed:@"greenButton.png"] forState:UIControlStateNormal];
-  [startButton setImage:[UIImage imageNamed:@"greenButtonPush.png"] forState:UIControlStateHighlighted];
+    [startButton setImage:[UIImage imageNamed:@"greenButtonPush.png"] forState:UIControlStateHighlighted];
 	
 	[clearButton setImage:[UIImage imageNamed:@"clearButton.png"] forState:UIControlStateNormal];
-  [clearButton setImage:[UIImage imageNamed:@"clearButtonPush.png"] forState:UIControlStateHighlighted];
+    [clearButton setImage:[UIImage imageNamed:@"clearButtonPush.png"] forState:UIControlStateHighlighted];
 	
 	[startOverButton setImage:[UIImage imageNamed:@"clearButton.png"] forState:UIControlStateNormal];
-  [startOverButton setImage:[UIImage imageNamed:@"clearButtonPush.png"] forState:UIControlStateHighlighted];
+    [startOverButton setImage:[UIImage imageNamed:@"clearButtonPush.png"] forState:UIControlStateHighlighted];
 	
 	picker.userInteractionEnabled = NO;
 	
@@ -120,8 +114,8 @@
 	[super viewDidLoad];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-	// add observer for the respective notifications (depending on the os version)
+- (void)viewDidAppear:(BOOL)animated
+{
 	if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 3.2) {
 		[[NSNotificationCenter defaultCenter] addObserver:self
 												 selector:@selector(keyboardDidShow:)
@@ -134,39 +128,40 @@
 												   object:nil];
 	}
 	
-  [super viewDidAppear:animated];
+    [super viewDidAppear:animated];
 }
 
-
-- (void)viewDidDisappear:(BOOL)animated {
+- (void)viewDidDisappear:(BOOL)animated
+{
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[super viewDidDisappear:animated];
 }
 
-
 #pragma mark - Delegate methods
 
-// A seconda della versione di iOS vengono chiamati due metodi diversi di notifica
-- (void)keyboardWillShow:(NSNotification *)note {
+- (void)keyboardWillShow:(NSNotification *)note
+{
 	// if clause is just an additional precaution, you could also dismiss it
 	if ([[[UIDevice currentDevice] systemVersion] floatValue] < 3.2)
 		[self addButtonToKeyboard];
 }
 
-- (void)keyboardDidShow:(NSNotification *)note {
+- (void)keyboardDidShow:(NSNotification *)note
+{
 	// if clause is just an additional precaution, you could also dismiss it
 	if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 3.2)
 		[self addButtonToKeyboard];
 }
 
-- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
 	return YES;
 }
 
-
 #pragma mark - Actions
 
-- (IBAction)makeKeyboardGoAway {
+- (IBAction)makeKeyboardGoAway
+{
 	for (int i = 0; i < [usedRegisters count]; i++) {
 		int arg = [[usedRegisters objectAtIndex:i] intValue];
 		[[scrollView viewWithTag:arg + 1000] viewWithTag:arg + 1];
@@ -175,8 +170,8 @@
 	}
 }
 
-- (IBAction)clearRegisters {
-  
+- (IBAction)clearRegisters
+{    
 	for (int i = 0; i < [usedRegisters count]; i++) {
 		int arg = [[usedRegisters objectAtIndex:i] intValue];
 		
@@ -184,22 +179,20 @@
 		origin = (UITextField*)[originView viewWithTag:arg + 1];
 		[origin setText:[NSString stringWithFormat:@"%d", 0]];
 	}
-	
 }
 
-- (IBAction)startOver {
-	
+- (IBAction)startOver
+{
 	PC = 0;
 	[lblProgramCounter setText:[NSString stringWithFormat:@"%d", 1]];
 	[picker selectRow:PC inComponent:0 animated:YES];
 }
 
-- (IBAction)start {
-	
-	if (PC >= [instructions count])
+- (IBAction)start
+{
+	if (PC >= [instructions count]) {
 		[self programEndedAlert];
-	
-	else {
+    } else {
 		NSArray *currentInstruction = [instructions objectAtIndex:PC];
 		
 		if ([[currentInstruction objectAtIndex:0] isEqualToString:@"Z"]) {
@@ -223,11 +216,10 @@
 			
 			[lblProgramCounter setText:[NSString stringWithFormat:@"%d", PC+1]];
 			[picker selectRow:PC inComponent:0 animated:YES];
-			if (PC >= [instructions count])
+			if (PC >= [instructions count]) {
 				[self programEndedAlert];
-		} // end Z case
-		
-		if ([[currentInstruction objectAtIndex:0] isEqualToString:@"S"]) {
+            }
+		} else if ([[currentInstruction objectAtIndex:0] isEqualToString:@"S"]) {
 			
 			arg1 = [[currentInstruction objectAtIndex:1] intValue];
 			originView = [scrollView viewWithTag:arg1 + 1000];
@@ -250,11 +242,10 @@
 			
 			[lblProgramCounter setText:[NSString stringWithFormat:@"%d", PC+1]];
 			[picker selectRow:PC inComponent:0 animated:YES];
-			if (PC >= [instructions count])
+			if (PC >= [instructions count]) {
 				[self programEndedAlert];
-		} // end S case
-		
-		if ([[currentInstruction objectAtIndex:0] isEqualToString:@"T"]) {
+            }
+		} else if ([[currentInstruction objectAtIndex:0] isEqualToString:@"T"]) {
 			
 			arg1 = [[currentInstruction objectAtIndex:1] intValue];
 			arg2 = [[currentInstruction objectAtIndex:2] intValue];
@@ -267,9 +258,9 @@
 			destination = (UITextField*)[destinationView viewWithTag:arg2 + 1]; 
 			
 			previousFrame = CGRectMake(originView.layer.frame.origin.x,
-                                 originView.layer.frame.origin.y,
-                                 originView.layer.frame.size.width,
-                                 originView.layer.frame.size.height);
+                                       originView.layer.frame.origin.y,
+                                       originView.layer.frame.size.width,
+                                       originView.layer.frame.size.height);
 			
 			[self enableButtonsForAnimation:NO];
 			
@@ -280,19 +271,20 @@
 			[UIView setAnimationDelegate:self];
 			[UIView setAnimationDidStopSelector:@selector(animateOtherStuff:finished:context:)];
 			originView.frame = CGRectMake(destinationView.layer.frame.origin.x,
-                                    destinationView.layer.frame.origin.y,
-                                    destinationView.layer.frame.size.width,
-                                    destinationView.layer.frame.size.height);
+                                          destinationView.layer.frame.origin.y,
+                                          destinationView.layer.frame.size.width,
+                                          destinationView.layer.frame.size.height);
 			
-      originView.alpha = 0.0;
-      [UIView commitAnimations];
+            originView.alpha = 0.0;
+            [UIView commitAnimations];
 			
 			PC++;
 			[lblProgramCounter setText:[NSString stringWithFormat:@"%d", PC+1]];
 			[picker selectRow:PC inComponent:0 animated:YES];
-			if (PC >= [instructions count])
+			if (PC >= [instructions count]) {
 				[self programEndedAlert];
-		} // end T case
+            }
+		}
 		
 		if ([[currentInstruction objectAtIndex:0] isEqualToString:@"J"]) {
 			
@@ -323,20 +315,19 @@
 				[lblProgramCounter setText:[NSString stringWithFormat:@"%d", PC+1]];
 				[picker selectRow:PC inComponent:0 animated:YES];
 			}
-		} // end J case		
-	} // end else
-	
+		}
+	}
 }
 
-- (IBAction)dismissButton {
-	
+- (IBAction)dismissButton
+{	
 	[self.navigationController dismissModalViewControllerAnimated:YES];
 }
 
-
 #pragma mark - Logic methods
 
-- (void)hideKeyboard {
+- (void)hideKeyboard
+{
 	for (int i = 0; i < [usedRegisters count]; i++) {
 		int arg = [[usedRegisters objectAtIndex:i] intValue];
 		[[scrollView viewWithTag:arg + 1000] viewWithTag:arg + 1];
@@ -345,16 +336,17 @@
 	}
 }
 
-- (void)addButtonToKeyboard {  
-  // create custom button
-  UIButton *doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
-  doneButton.frame = CGRectMake(0, 163, 106, 53);
-  doneButton.adjustsImageWhenHighlighted = NO;
-  [doneButton setImage:[UIImage imageNamed:@"doneUp.png"] forState:UIControlStateNormal];
-  [doneButton setImage:[UIImage imageNamed:@"doneDown.png"] forState:UIControlStateHighlighted];
-  [doneButton addTarget:self action:@selector(hideKeyboard) forControlEvents:UIControlEventTouchUpInside];
-
-  // locate keyboard view
+- (void)addButtonToKeyboard
+{  
+    // create custom button
+    UIButton *doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    doneButton.frame = CGRectMake(0, 163, 106, 53);
+    doneButton.adjustsImageWhenHighlighted = NO;
+    [doneButton setImage:[UIImage imageNamed:@"doneUp.png"] forState:UIControlStateNormal];
+    [doneButton setImage:[UIImage imageNamed:@"doneDown.png"] forState:UIControlStateHighlighted];
+    [doneButton addTarget:self action:@selector(hideKeyboard) forControlEvents:UIControlEventTouchUpInside];
+    
+    // locate keyboard view
 	UIWindow* tempWindow = [[[UIApplication sharedApplication] windows] objectAtIndex:1];
 	UIView* keyboard;
 	for(int i=0; i<[tempWindow.subviews count]; i++) {
@@ -364,16 +356,15 @@
 			if([[keyboard description] hasPrefix:@"<UIPeripheralHost"])
 				[keyboard addSubview:doneButton];
 		}
-    else {
+        else {
 			if([[keyboard description] hasPrefix:@"<UIKeyboard"])
 				[keyboard addSubview:doneButton];
 		}
 	}
-  
 }
 
-- (void)programEndedAlert {
-	
+- (void)programEndedAlert
+{
 	UIAlertView *alert = [[UIAlertView alloc] 
 						  initWithTitle:@"Program ended" 
 						  message:@"This URM program terminates. Execution reached a null instruction."
@@ -383,7 +374,8 @@
 	[alert show];
 }
 
-- (void)enableButtonsForAnimation:(BOOL)state{
+- (void)enableButtonsForAnimation:(BOOL)state
+{
 	clearButton.userInteractionEnabled = state;
 	startButton.userInteractionEnabled = state;
 	startOverButton.userInteractionEnabled = state;
@@ -391,14 +383,14 @@
 
 - (void)animateOtherStuff:(NSString*)animationID
 				 finished:(NSNumber*)finished
-				  context:(void*)context {
-  
-  // This test allows to figure out what animation block ended. 
-  // Not required but nice if you have multiple animations 
-  // pointing to the same animation termination method
+				  context:(void*)context
+{    
+    // This test allows to figure out what animation block ended. 
+    // Not required but nice if you have multiple animations 
+    // pointing to the same animation termination method
 	
 	originView = [scrollView viewWithTag:arg1 + 1000];
-
+    
 	if ([animationID isEqualToString:@"FirstAnimation"]) {
 		originView.frame = previousFrame;
 		//second animation
@@ -411,25 +403,25 @@
 		destinationView.alpha = 1.0;
 		[destination setText:[NSString stringWithFormat:@"%d", value]];
 		[UIView commitAnimations];
-  }
+    }
 	
-  if ([animationID isEqualToString:@"SecondAnimation"]) {
+    if ([animationID isEqualToString:@"SecondAnimation"]) {
 		[self enableButtonsForAnimation:YES];
-  } 
+    } 
 	
-  if ([animationID isEqualToString:@"ZeroAnimation2"]) {
+    if ([animationID isEqualToString:@"ZeroAnimation2"]) {
 		destinationView.alpha = 1.0;
 		originView.alpha = 1.0;
 		[origin setText:@"0"];
 		[self enableButtonsForAnimation:YES];
-  }
+    }
 	
-  if ([animationID isEqualToString:@"SuccAnimation2"]) {
+    if ([animationID isEqualToString:@"SuccAnimation2"]) {
 		destinationView.alpha = 1.0;
 		originView.alpha = 1.0;
 		[origin setText:[NSString stringWithFormat:@"%d", value]];
 		[self enableButtonsForAnimation:YES];
-  }
+    }
 	
 	if ([animationID isEqualToString:@"ZeroAnimation"]) {
 		[UIView beginAnimations:@"ZeroAnimation2" context:nil];
@@ -441,7 +433,7 @@
 		[UIView commitAnimations];
 	}
 	
-  if ([animationID isEqualToString:@"SuccAnimation"]) {
+    if ([animationID isEqualToString:@"SuccAnimation"]) {
 		[UIView beginAnimations:@"SuccAnimation2" context:nil];
 		[UIView setAnimationDuration:0.25];
 		[UIView setAnimationTransition:UIViewAnimationTransitionNone forView:scrollView cache:YES];
@@ -450,17 +442,16 @@
 		originView.alpha = 1.0;
 		[UIView commitAnimations];
 	}
-  
 }
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-	
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{	
 	[textField resignFirstResponder];
 	return  YES;
 }
 
-- (NSMutableArray *)calculateUsedRegisters {
-	
+- (NSMutableArray *)calculateUsedRegisters
+{	
 	for (int i = 0; i < [instructions count]; i++) {
 		BOOL done = NO;
 		int bound;
@@ -469,7 +460,7 @@
 			// refer to registers (it refers to instructions)
 			bound = [[instructions objectAtIndex:i] count] - 1;
 		else bound = [[instructions objectAtIndex:i] count];
-
+        
 		for (int j = 1; j < bound; j++) {
 			done = NO;
 			int temp = [[[instructions objectAtIndex:i] objectAtIndex:j] intValue];
@@ -484,37 +475,31 @@
 				}
 			}
 			if (!done)
-					[usedRegisters insertObject:[NSNumber numberWithInt:temp] atIndex:k];
+                [usedRegisters insertObject:[NSNumber numberWithInt:temp] atIndex:k];
 		}
 	}
-  
-	return usedRegisters;		
-
+    
+	return usedRegisters;
 }
 
+#pragma mark - Picker view datasource
 
-#pragma mark -
-#pragma mark Picker view datasource
-
-- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
-	
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
 	return 1;
 }
 
-- (NSInteger)pickerView:(UIPickerView *)pickerView
-numberOfRowsInComponent:(NSInteger)component {
-	
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{	
 	return ([instructions count] + 1);
 }
 
-
-#pragma mark -
-#pragma mark Picker view delegate
+#pragma mark - Picker view delegate
 
 - (NSString *)pickerView:(UIPickerView *)pickerView
              titleForRow:(NSInteger)row
-            forComponent:(NSInteger)component {
-	
+            forComponent:(NSInteger)component
+{	
 	if (row == [instructions count])
 		return @"END";
 	
@@ -537,60 +522,62 @@ numberOfRowsInComponent:(NSInteger)component {
 		retval = [NSString stringWithFormat:@"i%d: J(%d, %D, %D)", visualPC, [[instruction objectAtIndex:1] intValue], [[instruction objectAtIndex:2] intValue], [[instruction objectAtIndex:3] intValue]];
 	
 	return retval;
-  
+    
 }
 
 // if you feel creative to create your own cells...
 
-/*- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view {
-	UILabel *retval = (id)view;
-	if (!retval) {
-		retval= [[[UILabel alloc] initWithFrame:CGRectMake(40, 0, [pickerView rowSizeForComponent:component].width, [pickerView rowSizeForComponent:component].height)] autorelease];
-	}
-	retval.textAlignment = UITextAlignmentLeft;
-	retval.font = [UIFont fontWithName:@"Courier" size:16];
-	
-	if (row == [instructions count]) {
-		retval.text = @"END";
-	}
-	
-	else {
-		NSArray *instruction = [instructions objectAtIndex:row];
-		NSString *type = [instruction objectAtIndex:0];
-	
-		int visualPC = row + 1;
-	
-		if
- ([type isEqualToString:@"Z"]) {
-			retval.text = [NSString stringWithFormat:@"i%d: Z(%d)", visualPC, [[instruction objectAtIndex:1] intValue]];
-		}
-		if ([type isEqualToString:@"S"]) {
-			retval.text = [NSString stringWithFormat:@"i%d: S(%d)", visualPC, [[instruction objectAtIndex:1] intValue]];
-		}
-		if ([type isEqualToString:@"T"]) {
-			retval.text = [NSString stringWithFormat:@"i%d: T(%d,%d)", visualPC, [[instruction objectAtIndex:1] intValue], [[instruction objectAtIndex:2] intValue]];
-		}
-		if ([type isEqualToString:@"J"]) {
-			retval.text = [NSString stringWithFormat:@"i%d: J(%d,%D,%D)", visualPC, [[instruction objectAtIndex:1] intValue], [[instruction objectAtIndex:2] intValue], [[instruction objectAtIndex:3] intValue]];
-		}
-	}
-	
-	return retval;
-}*/
+//- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view {
+//    UILabel *retval = (id)view;
+//    if (!retval) {
+//        retval= [[[UILabel alloc] initWithFrame:CGRectMake(40, 0, [pickerView rowSizeForComponent:component].width, [pickerView rowSizeForComponent:component].height)] autorelease];
+//    }
+//    retval.textAlignment = UITextAlignmentLeft;
+//    retval.font = [UIFont fontWithName:@"Courier" size:16];
+//    
+//    if (row == [instructions count]) {
+//        retval.text = @"END";
+//    }
+//    
+//    else {
+//        NSArray *instruction = [instructions objectAtIndex:row];
+//        NSString *type = [instruction objectAtIndex:0];
+//        
+//        int visualPC = row + 1;
+//        
+//        if
+//            ([type isEqualToString:@"Z"]) {
+//                retval.text = [NSString stringWithFormat:@"i%d: Z(%d)", visualPC, [[instruction objectAtIndex:1] intValue]];
+//            }
+//        if ([type isEqualToString:@"S"]) {
+//            retval.text = [NSString stringWithFormat:@"i%d: S(%d)", visualPC, [[instruction objectAtIndex:1] intValue]];
+//        }
+//        if ([type isEqualToString:@"T"]) {
+//            retval.text = [NSString stringWithFormat:@"i%d: T(%d,%d)", visualPC, [[instruction objectAtIndex:1] intValue], [[instruction objectAtIndex:2] intValue]];
+//        }
+//        if ([type isEqualToString:@"J"]) {
+//            retval.text = [NSString stringWithFormat:@"i%d: J(%d,%D,%D)", visualPC, [[instruction objectAtIndex:1] intValue], [[instruction objectAtIndex:2] intValue], [[instruction objectAtIndex:3] intValue]];
+//        }
+//    }
+//    
+//    return retval;
+//}
 
-- (void)didReceiveMemoryWarning {
-  // Releases the view if it doesn't have a superview.
-  [super didReceiveMemoryWarning];
-  // Release any cached data, images, etc that aren't in use.
-}
+#pragma mark - Memory management
 
 - (void)viewDidUnload {
-  [super viewDidUnload];
-  // Release any retained subviews of the main view.
-  // e.g. self.myOutlet = nil;
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+    scrollView = nil;
+	picker = nil;
+	lblProgramCounter = nil;
+	buttonForBackground = nil;
+	startButton = nil;
+	clearButton = nil;
+	startOverButton = nil;
+	viewProgramCounter = nil;
+	imgProgramCounter = nil;
+	startLabel = nil;
 }
-
-
-
 
 @end
