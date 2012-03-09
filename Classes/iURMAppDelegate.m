@@ -46,8 +46,7 @@
 	
 	usleep(1000000);
 	
-	// another splash screen, the first one needs for the background calling the About window
-	// this one needs for the fade out
+	// fade out effect for splash screen 
 	splashView = [[UIImageView alloc] initWithFrame:CGRectMake(0,0, 320, 480)];
 	splashView.image = [UIImage imageNamed:@"Default.png"];
 	[window addSubview:splashView];
