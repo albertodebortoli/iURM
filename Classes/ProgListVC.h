@@ -12,11 +12,7 @@
 #import "AboutViewController.h"
 
 
-@interface ProgListVC : UIViewController <UITableViewDelegate, UITableViewDataSource, AboutViewControllerDelegate> {
-	
-	NSMutableArray *programsArray;
-	IBOutlet UITableView *tableList;
-}
+@interface ProgListVC : UIViewController <UITableViewDelegate, UITableViewDataSource, AboutViewControllerDelegate>
 
 - (IBAction)addProgram;
 - (IBAction)showInfo;

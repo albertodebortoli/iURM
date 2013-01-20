@@ -10,11 +10,7 @@
 
 @class ProgListVC;
 
-@interface iURMAppDelegate : NSObject <UIApplicationDelegate> {    
-    UIWindow *window;
-    UINavigationController *navigationController;
-	ProgListVC *referenceToProgListForSaving;
-}
+@interface iURMAppDelegate : NSObject <UIApplicationDelegate>
 
 @property (nonatomic, strong) IBOutlet UIWindow *window;
 @property (nonatomic, strong) IBOutlet UINavigationController *navigationController;

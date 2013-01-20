@@ -12,10 +12,6 @@
 
 @implementation iURMAppDelegate
 
-@synthesize window;
-@synthesize navigationController;
-@synthesize referenceToProgListForSaving;
-
 #pragma mark - Application lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -25,14 +21,14 @@
 	// Add the navigation controller's view to the window and display.
 	UIImageView *splashView = [[UIImageView alloc] initWithFrame:CGRectMake(0,0, 320, 480)];
 	splashView.image = [UIImage imageNamed:@"background.png"];
-	[window addSubview:splashView];
-	[window bringSubviewToFront:splashView];
+	[self.window addSubview:splashView];
+	[self.window bringSubviewToFront:splashView];
 	
-	[window addSubview:navigationController.view];
-	[window makeKeyAndVisible];
+	[self.window addSubview:self.navigationController.view];
+	[self.window makeKeyAndVisible];
 	
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-	NSString *documentsDirectory = [paths objectAtIndex:0];
+	NSString *documentsDirectory = paths[0];
 	NSString *pathDB = [documentsDirectory stringByAppendingPathComponent:@"DB.plist"];
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:pathDB]){
@@ -49,10 +45,10 @@
 	// fade out effect for splash screen 
 	splashView = [[UIImageView alloc] initWithFrame:CGRectMake(0,0, 320, 480)];
 	splashView.image = [UIImage imageNamed:@"Default.png"];
-	[window addSubview:splashView];
-	[window bringSubviewToFront:splashView];
+	[self.window addSubview:splashView];
+	[self.window bringSubviewToFront:splashView];
     
-    [UIView animateWithDuration:0.5 animations:^{
+    [UIView transitionWithView:splashView duration:0.5 options:UIViewAnimationOptionTransitionCurlUp animations:^{
         [splashView setAlpha:0.0];
     } completion:^(BOOL finished) {
         [splashView removeFromSuperview];
@@ -63,16 +59,15 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-	[referenceToProgListForSaving saveToDB];
+	[self.referenceToProgListForSaving saveToDB];
 	NSLog(@"Saving DB on applicationDidEnterBackground");
 	
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-	[referenceToProgListForSaving saveToDB];
+	[self.referenceToProgListForSaving saveToDB];
     NSLog(@"Saving DB on applicationWillTerminate");
 }
 
 @end
-

@@ -11,10 +11,6 @@
 @class ProgListVC;
 
 @interface ProgAddEditVC : UIViewController<UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate > {
-
-	ProgListVC *parent;
-	int index;
-	BOOL editMode;
 	
 	UITextField *tfName;
 	UITextField *tfNote;
@@ -25,7 +21,7 @@
 - (IBAction)saveButton;
 
 @property(nonatomic, strong) ProgListVC *parent;
-@property(nonatomic) int index;
-@property(nonatomic) BOOL editMode;
+@property(nonatomic, unsafe_unretained) int index;
+@property(nonatomic, unsafe_unretained) BOOL editMode;
 
 @end

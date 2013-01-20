@@ -11,10 +11,6 @@
 
 @implementation ProgAddEditVC
 
-@synthesize parent;
-@synthesize index;
-@synthesize editMode;
-
 - (void)viewDidLoad
 {	
 	self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
@@ -33,7 +29,7 @@
 	[self.navigationItem setRightBarButtonItem:saveButton];
 	
 	// edit mode
-	if (editMode)
+	if (self.editMode)
 		[self setTitle:@"Modify Program"];
     
 	// add mode
@@ -88,14 +84,14 @@
 			NSMutableArray *instructions = [[NSMutableArray alloc] initWithArray:nil];
 			NSArray *instruction;
 			for (int i=0; i<[tfNumberOfInstruction.text intValue]; i++) {
-				instruction = [NSArray arrayWithObjects:[NSString stringWithString:@"J"], [NSNumber numberWithInt:1], [NSNumber numberWithInt:1], [NSNumber numberWithInt:1], nil];
+				instruction = @[@"J", @1, @1, @1];
 				[instructions addObject:instruction];
 			}
-			NSArray *newEntry = [NSArray arrayWithObjects: tfName.text, tfNote.text, instructions, nil];
-			[parent.programsArray insertObject:newEntry atIndex:index];
+			NSArray *newEntry = @[tfName.text, tfNote.text, instructions];
+			[self.parent.programsArray insertObject:newEntry atIndex:self.index];
 			[self.navigationController dismissModalViewControllerAnimated:YES];
 			
-			[parent.tableList reloadData];
+			[self.parent.tableList reloadData];
 		}
 	}
 }
@@ -116,7 +112,7 @@
 - (NSString *)tableView:(UITableView *)tableView 
 titleForFooterInSection:(NSInteger)section
 {    
-	if (editMode) {
+	if (self.editMode) {
         return @"edit the data for the selected program";
 	} else { // new program
 		return @"fill the fields with the data for the new program";
@@ -168,15 +164,6 @@ titleForFooterInSection:(NSInteger)section
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {    
 	// nothing to do
-}
-
-#pragma mark - Memory management
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
 @end

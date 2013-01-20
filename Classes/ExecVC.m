@@ -11,17 +11,13 @@
 #import "ProgListVC.h"
 #import <QuartzCore/QuartzCore.h>
 
-@implementation ExecVC
-
-@synthesize scrollView;
-@synthesize parent;
-@synthesize picker;
-
 #define PADDING_TOP 4
 #define PADDING 4
 #define THUMBNAIL_COLS 4
 #define THUMBNAIL 150
 #define THUMBNAIL_75 75
+
+@implementation ExecVC
 
 - (void)viewDidLoad
 {	
@@ -35,13 +31,13 @@
 	
 	[self.navigationItem setRightBarButtonItem:dismissButton];
 	
-	program = [parent.parent.programsArray objectAtIndex:parent.index];
-	instructions = [program objectAtIndex:2];
+	program = (self.parent.parent.programsArray)[self.parent.index];
+	instructions = program[2];
 	
 	// calculates the number of used registers
 	usedRegisters = [[NSMutableArray alloc] initWithArray:nil];
 	usedRegisters = [self calculateUsedRegisters];
-	scrollView.tag = -1;
+	self.scrollView.tag = -1;
 	buttonForBackground.tag = -2;
 	
 	for (int i = 0; i < [usedRegisters count]; i++) {
@@ -52,7 +48,7 @@
 		// needs to track views with tag index for later animations (T instructions)
 		// a little hack, because tag 0 can't be used but register 0 can exists
 		// (the greatest index of register the programs can used is indicated in the offset (1000, can be changed)
-		view.tag = [[usedRegisters objectAtIndex:i] intValue] + 1000;
+		view.tag = [usedRegisters[i] intValue] + 1000;
 		
 		UIImageView *image = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, THUMBNAIL_75, THUMBNAIL_75)];
 		[image setImage:[UIImage imageNamed:@"PC.png"]];
@@ -60,7 +56,7 @@
 		[view setBackgroundColor:[UIColor clearColor]];
 		
 		UILabel *lblNumberRegister = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, 55, 25)];
-		lblNumberRegister.text = [NSString stringWithFormat:@"R%d",[[usedRegisters objectAtIndex:i] intValue]];
+		lblNumberRegister.text = [NSString stringWithFormat:@"R%d",[usedRegisters[i] intValue]];
 		[lblNumberRegister setBackgroundColor:[UIColor clearColor]];
 		[lblNumberRegister setFont:[UIFont fontWithName:@"Courier" size:20]];
 		lblNumberRegister.textAlignment = UITextAlignmentLeft;
@@ -76,7 +72,7 @@
 		txtValueRegister.autocorrectionType = UITextAutocorrectionTypeNo;
 		txtValueRegister.backgroundColor = [UIColor clearColor];
 		txtValueRegister.keyboardType = UIKeyboardTypeNumberPad;
-		txtValueRegister.tag = [[usedRegisters objectAtIndex:i] intValue] + 1; //se esiste il registro 0, tag = 0 non è riconosciuto, stranamente, quindi sommo 1
+		txtValueRegister.tag = [usedRegisters[i] intValue] + 1; //se esiste il registro 0, tag = 0 non è riconosciuto, stranamente, quindi sommo 1
 		txtValueRegister.adjustsFontSizeToFitWidth = YES;
 		txtValueRegister.minimumFontSize = 5;
 		
@@ -84,16 +80,16 @@
 		[view addSubview:lblNumberRegister];
 		[view addSubview:txtValueRegister];
         
-		[scrollView addSubview:view];
+		[self.scrollView addSubview:view];
 	}
 	
 	int rows = [usedRegisters count] / THUMBNAIL_COLS;
 	if (((float)[usedRegisters count] / THUMBNAIL_COLS) - rows != 0) rows++;
 	int height = THUMBNAIL_75 * rows + PADDING * rows + PADDING; // + PADDING_TOP;
 	
-	scrollView.contentSize = CGSizeMake(self.view.frame.size.width, height);
-	scrollView.clipsToBounds = YES;
-	[scrollView setScrollEnabled:YES];
+	self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, height);
+	self.scrollView.clipsToBounds = YES;
+	[self.scrollView setScrollEnabled:YES];
 	
 	[viewProgramCounter setBackgroundColor:[UIColor clearColor]];
 	[imgProgramCounter setImage:[UIImage imageNamed:@"PC.png"]];
@@ -107,7 +103,7 @@
 	[startOverButton setImage:[UIImage imageNamed:@"clearButton.png"] forState:UIControlStateNormal];
     [startOverButton setImage:[UIImage imageNamed:@"clearButtonPush.png"] forState:UIControlStateHighlighted];
 	
-	picker.userInteractionEnabled = NO;
+	self.picker.userInteractionEnabled = NO;
 	
 	[self startOver];
 	
@@ -163,9 +159,9 @@
 - (IBAction)makeKeyboardGoAway
 {
 	for (int i = 0; i < [usedRegisters count]; i++) {
-		int arg = [[usedRegisters objectAtIndex:i] intValue];
-		[[scrollView viewWithTag:arg + 1000] viewWithTag:arg + 1];
-		UIView *temp = [[scrollView viewWithTag:arg + 1000] viewWithTag:arg + 1];
+		int arg = [usedRegisters[i] intValue];
+		[[self.scrollView viewWithTag:arg + 1000] viewWithTag:arg + 1];
+		UIView *temp = [[self.scrollView viewWithTag:arg + 1000] viewWithTag:arg + 1];
 		[(UITextField*)temp resignFirstResponder];
 	}
 }
@@ -173,9 +169,9 @@
 - (IBAction)clearRegisters
 {    
 	for (int i = 0; i < [usedRegisters count]; i++) {
-		int arg = [[usedRegisters objectAtIndex:i] intValue];
+		int arg = [usedRegisters[i] intValue];
 		
-		originView = [scrollView viewWithTag:arg + 1000];
+		originView = [self.scrollView viewWithTag:arg + 1000];
 		origin = (UITextField*)[originView viewWithTag:arg + 1];
 		[origin setText:[NSString stringWithFormat:@"%d", 0]];
 	}
@@ -185,7 +181,7 @@
 {
 	PC = 0;
 	[lblProgramCounter setText:[NSString stringWithFormat:@"%d", 1]];
-	[picker selectRow:PC inComponent:0 animated:YES];
+	[self.picker selectRow:PC inComponent:0 animated:YES];
 }
 
 - (IBAction)start
@@ -193,12 +189,12 @@
 	if (PC >= [instructions count]) {
 		[self programEndedAlert];
     } else {
-		NSArray *currentInstruction = [instructions objectAtIndex:PC];
+		NSArray *currentInstruction = instructions[PC];
 		
-		if ([[currentInstruction objectAtIndex:0] isEqualToString:@"Z"]) {
+		if ([currentInstruction[0] isEqualToString:@"Z"]) {
 			
-			arg1 = [[currentInstruction objectAtIndex:1] intValue];
-			originView = [scrollView viewWithTag:arg1 + 1000];
+			arg1 = [currentInstruction[1] intValue];
+			originView = [self.scrollView viewWithTag:arg1 + 1000];
 			origin = (UITextField*)[originView viewWithTag:arg1 + 1]; 
 			
 			PC++;
@@ -208,21 +204,21 @@
 			//first animation
 			[UIView beginAnimations:@"ZeroAnimation" context:nil];
 			[UIView setAnimationDuration:0.25];
-			[UIView setAnimationTransition:UIViewAnimationTransitionNone forView:scrollView cache:YES];
+			[UIView setAnimationTransition:UIViewAnimationTransitionNone forView:self.scrollView cache:YES];
 			[UIView setAnimationDelegate:self];
 			[UIView setAnimationDidStopSelector:@selector(animateOtherStuff:finished:context:)];
 			originView.alpha = 0.2;
 			[UIView commitAnimations];
 			
 			[lblProgramCounter setText:[NSString stringWithFormat:@"%d", PC+1]];
-			[picker selectRow:PC inComponent:0 animated:YES];
+			[self.picker selectRow:PC inComponent:0 animated:YES];
 			if (PC >= [instructions count]) {
 				[self programEndedAlert];
             }
-		} else if ([[currentInstruction objectAtIndex:0] isEqualToString:@"S"]) {
+		} else if ([currentInstruction[0] isEqualToString:@"S"]) {
 			
-			arg1 = [[currentInstruction objectAtIndex:1] intValue];
-			originView = [scrollView viewWithTag:arg1 + 1000];
+			arg1 = [currentInstruction[1] intValue];
+			originView = [self.scrollView viewWithTag:arg1 + 1000];
 			origin = (UITextField*)[originView viewWithTag:arg1 + 1]; 
 			value = [[origin text] intValue];
 			value++;
@@ -233,7 +229,7 @@
 			//first animation
 			[UIView beginAnimations:@"SuccAnimation" context:nil];
 			[UIView setAnimationDuration:0.25];
-			[UIView setAnimationTransition:UIViewAnimationTransitionNone forView:scrollView cache:YES];
+			[UIView setAnimationTransition:UIViewAnimationTransitionNone forView:self.scrollView cache:YES];
 			[UIView setAnimationDelegate:self];
 			[UIView setAnimationDidStopSelector:@selector(animateOtherStuff:finished:context:)];
 			originView.alpha = 0.2;
@@ -241,20 +237,20 @@
 			
 			
 			[lblProgramCounter setText:[NSString stringWithFormat:@"%d", PC+1]];
-			[picker selectRow:PC inComponent:0 animated:YES];
+			[self.picker selectRow:PC inComponent:0 animated:YES];
 			if (PC >= [instructions count]) {
 				[self programEndedAlert];
             }
-		} else if ([[currentInstruction objectAtIndex:0] isEqualToString:@"T"]) {
+		} else if ([currentInstruction[0] isEqualToString:@"T"]) {
 			
-			arg1 = [[currentInstruction objectAtIndex:1] intValue];
-			arg2 = [[currentInstruction objectAtIndex:2] intValue];
+			arg1 = [currentInstruction[1] intValue];
+			arg2 = [currentInstruction[2] intValue];
 			
-			originView = [scrollView viewWithTag:arg1 + 1000];
+			originView = [self.scrollView viewWithTag:arg1 + 1000];
 			origin = (UITextField*)[originView viewWithTag:arg1 + 1]; 
 			value = [[origin text] intValue];
 			
-			destinationView = [scrollView viewWithTag:arg2 + 1000];
+			destinationView = [self.scrollView viewWithTag:arg2 + 1000];
 			destination = (UITextField*)[destinationView viewWithTag:arg2 + 1]; 
 			
 			previousFrame = CGRectMake(originView.layer.frame.origin.x,
@@ -267,7 +263,7 @@
 			//first animation
 			[UIView beginAnimations:@"FirstAnimation" context:nil];
 			[UIView setAnimationDuration:0.75];
-			[UIView setAnimationTransition:UIViewAnimationTransitionNone forView:scrollView cache:YES];
+			[UIView setAnimationTransition:UIViewAnimationTransitionNone forView:self.scrollView cache:YES];
 			[UIView setAnimationDelegate:self];
 			[UIView setAnimationDidStopSelector:@selector(animateOtherStuff:finished:context:)];
 			originView.frame = CGRectMake(destinationView.layer.frame.origin.x,
@@ -280,23 +276,23 @@
 			
 			PC++;
 			[lblProgramCounter setText:[NSString stringWithFormat:@"%d", PC+1]];
-			[picker selectRow:PC inComponent:0 animated:YES];
+			[self.picker selectRow:PC inComponent:0 animated:YES];
 			if (PC >= [instructions count]) {
 				[self programEndedAlert];
             }
 		}
 		
-		if ([[currentInstruction objectAtIndex:0] isEqualToString:@"J"]) {
+		if ([currentInstruction[0] isEqualToString:@"J"]) {
 			
-			arg1 = [[currentInstruction objectAtIndex:1] intValue];
-			arg2 = [[currentInstruction objectAtIndex:2] intValue];
-			arg3 = [[currentInstruction objectAtIndex:3] intValue];
+			arg1 = [currentInstruction[1] intValue];
+			arg2 = [currentInstruction[2] intValue];
+			arg3 = [currentInstruction[3] intValue];
 			
-			originView = [scrollView viewWithTag:arg1 + 1000];
+			originView = [self.scrollView viewWithTag:arg1 + 1000];
 			origin = (UITextField*)[originView viewWithTag:arg1 + 1];
 			int value1 = [[(UITextField*)origin text] intValue];
 			
-			destinationView = [scrollView viewWithTag:arg2 + 1000];
+			destinationView = [self.scrollView viewWithTag:arg2 + 1000];
 			destination = (UITextField*)[destinationView viewWithTag:arg2 + 1]; 
 			int value2 = [[destination text] intValue];
 			
@@ -305,15 +301,15 @@
 				[lblProgramCounter setText:[NSString stringWithFormat:@"%d", PC+1]];
 				if (PC >= [instructions count]) {
 					[self programEndedAlert];
-					[picker selectRow:[instructions count] inComponent:0 animated:YES];
+					[self.picker selectRow:[instructions count] inComponent:0 animated:YES];
 				}
 				else
-					[picker selectRow:PC inComponent:0 animated:YES];
+					[self.picker selectRow:PC inComponent:0 animated:YES];
 			}
 			else {
 				PC++;
 				[lblProgramCounter setText:[NSString stringWithFormat:@"%d", PC+1]];
-				[picker selectRow:PC inComponent:0 animated:YES];
+				[self.picker selectRow:PC inComponent:0 animated:YES];
 			}
 		}
 	}
@@ -329,9 +325,9 @@
 - (void)hideKeyboard
 {
 	for (int i = 0; i < [usedRegisters count]; i++) {
-		int arg = [[usedRegisters objectAtIndex:i] intValue];
-		[[scrollView viewWithTag:arg + 1000] viewWithTag:arg + 1];
-		UIView *temp = [[scrollView viewWithTag:arg + 1000] viewWithTag:arg + 1];
+		int arg = [usedRegisters[i] intValue];
+		[[self.scrollView viewWithTag:arg + 1000] viewWithTag:arg + 1];
+		UIView *temp = [[self.scrollView viewWithTag:arg + 1000] viewWithTag:arg + 1];
 		[(UITextField*)temp resignFirstResponder];
 	}
 }
@@ -347,10 +343,10 @@
     [doneButton addTarget:self action:@selector(hideKeyboard) forControlEvents:UIControlEventTouchUpInside];
     
     // locate keyboard view
-	UIWindow* tempWindow = [[[UIApplication sharedApplication] windows] objectAtIndex:1];
+	UIWindow* tempWindow = [[UIApplication sharedApplication] windows][1];
 	UIView* keyboard;
 	for(int i=0; i<[tempWindow.subviews count]; i++) {
-		keyboard = [tempWindow.subviews objectAtIndex:i];
+		keyboard = (tempWindow.subviews)[i];
 		// keyboard found, add the button
 		if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 3.2) {
 			if([[keyboard description] hasPrefix:@"<UIPeripheralHost"])
@@ -389,14 +385,14 @@
     // Not required but nice if you have multiple animations 
     // pointing to the same animation termination method
 	
-	originView = [scrollView viewWithTag:arg1 + 1000];
+	originView = [self.scrollView viewWithTag:arg1 + 1000];
     
 	if ([animationID isEqualToString:@"FirstAnimation"]) {
 		originView.frame = previousFrame;
 		//second animation
 		[UIView beginAnimations:@"SecondAnimation" context:nil];
 		[UIView setAnimationDuration:0.25];
-		[UIView setAnimationTransition:UIViewAnimationTransitionNone forView:scrollView cache:YES];
+		[UIView setAnimationTransition:UIViewAnimationTransitionNone forView:self.scrollView cache:YES];
 		[UIView setAnimationDelegate:self]; 
 		[UIView setAnimationDidStopSelector:@selector(animateOtherStuff:finished:context:)];
 		originView.alpha = 1.0;
@@ -426,7 +422,7 @@
 	if ([animationID isEqualToString:@"ZeroAnimation"]) {
 		[UIView beginAnimations:@"ZeroAnimation2" context:nil];
 		[UIView setAnimationDuration:0.25];
-		[UIView setAnimationTransition:UIViewAnimationTransitionNone forView:scrollView cache:YES];
+		[UIView setAnimationTransition:UIViewAnimationTransitionNone forView:self.scrollView cache:YES];
 		[UIView setAnimationDelegate:self]; 
 		[UIView setAnimationDidStopSelector:@selector(animateOtherStuff:finished:context:)];
 		originView.alpha = 1.0;
@@ -436,7 +432,7 @@
     if ([animationID isEqualToString:@"SuccAnimation"]) {
 		[UIView beginAnimations:@"SuccAnimation2" context:nil];
 		[UIView setAnimationDuration:0.25];
-		[UIView setAnimationTransition:UIViewAnimationTransitionNone forView:scrollView cache:YES];
+		[UIView setAnimationTransition:UIViewAnimationTransitionNone forView:self.scrollView cache:YES];
 		[UIView setAnimationDelegate:self]; 
 		[UIView setAnimationDidStopSelector:@selector(animateOtherStuff:finished:context:)];
 		originView.alpha = 1.0;
@@ -455,27 +451,27 @@
 	for (int i = 0; i < [instructions count]; i++) {
 		BOOL done = NO;
 		int bound;
-		if ([[[instructions objectAtIndex:i] objectAtIndex:0] isEqualToString:@"J"])
+		if ([instructions[i][0] isEqualToString:@"J"])
 			// not adding the third parameter because it does not
 			// refer to registers (it refers to instructions)
-			bound = [[instructions objectAtIndex:i] count] - 1;
-		else bound = [[instructions objectAtIndex:i] count];
+			bound = [instructions[i] count] - 1;
+		else bound = [instructions[i] count];
         
 		for (int j = 1; j < bound; j++) {
 			done = NO;
-			int temp = [[[instructions objectAtIndex:i] objectAtIndex:j] intValue];
+			int temp = [instructions[i][j] intValue];
 			int k = 0;
 			for (k = 0; (k < [usedRegisters count]) && (!done); k++) {
-				if ([[usedRegisters objectAtIndex:k] intValue] == temp){
+				if ([usedRegisters[k] intValue] == temp){
 					done = YES;
 				}
-				if ([[usedRegisters objectAtIndex:k] intValue] > temp) {
-					[usedRegisters insertObject:[NSNumber numberWithInt:temp] atIndex:k];
+				if ([usedRegisters[k] intValue] > temp) {
+					[usedRegisters insertObject:@(temp) atIndex:k];
 					done = YES;
 				}
 			}
 			if (!done)
-                [usedRegisters insertObject:[NSNumber numberWithInt:temp] atIndex:k];
+                [usedRegisters insertObject:@(temp) atIndex:k];
 		}
 	}
     
@@ -503,23 +499,23 @@
 	if (row == [instructions count])
 		return @"END";
 	
-	NSArray *instruction = [instructions objectAtIndex:row];
+	NSArray *instruction = instructions[row];
 	NSString *retval = @"";
-	NSString *type = [instruction objectAtIndex:0];
+	NSString *type = instruction[0];
 	
 	int visualPC = row + 1;
 	
 	if ([type isEqualToString:@"Z"])
-		retval = [NSString stringWithFormat:@"i%d: Z(%d)", visualPC, [[instruction objectAtIndex:1] intValue]];
+		retval = [NSString stringWithFormat:@"i%d: Z(%d)", visualPC, [instruction[1] intValue]];
     
 	if ([type isEqualToString:@"S"])
-		retval = [NSString stringWithFormat:@"i%d: S(%d)", visualPC, [[instruction objectAtIndex:1] intValue]];
+		retval = [NSString stringWithFormat:@"i%d: S(%d)", visualPC, [instruction[1] intValue]];
 	
 	if ([type isEqualToString:@"T"])
-		retval = [NSString stringWithFormat:@"i%d: T(%d, %d)", visualPC, [[instruction objectAtIndex:1] intValue], [[instruction objectAtIndex:2] intValue]];
+		retval = [NSString stringWithFormat:@"i%d: T(%d, %d)", visualPC, [instruction[1] intValue], [instruction[2] intValue]];
 	
 	if ([type isEqualToString:@"J"])
-		retval = [NSString stringWithFormat:@"i%d: J(%d, %D, %D)", visualPC, [[instruction objectAtIndex:1] intValue], [[instruction objectAtIndex:2] intValue], [[instruction objectAtIndex:3] intValue]];
+		retval = [NSString stringWithFormat:@"i%d: J(%d, %d, %d)", visualPC, [instruction[1] intValue], [instruction[2] intValue], [instruction[3] intValue]];
 	
 	return retval;
     
@@ -530,7 +526,7 @@
 //- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view {
 //    UILabel *retval = (id)view;
 //    if (!retval) {
-//        retval= [[[UILabel alloc] initWithFrame:CGRectMake(40, 0, [pickerView rowSizeForComponent:component].width, [pickerView rowSizeForComponent:component].height)] autorelease];
+//        retval= [[[UILabel alloc] initWithFrame:CGRectMake(40, 0, [self.pickerView rowSizeForComponent:component].width, [self.pickerView rowSizeForComponent:component].height)] autorelease];
 //    }
 //    retval.textAlignment = UITextAlignmentLeft;
 //    retval.font = [UIFont fontWithName:@"Courier" size:16];
@@ -562,22 +558,5 @@
 //    
 //    return retval;
 //}
-
-#pragma mark - Memory management
-
-- (void)viewDidUnload {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    scrollView = nil;
-	picker = nil;
-	lblProgramCounter = nil;
-	buttonForBackground = nil;
-	startButton = nil;
-	clearButton = nil;
-	startOverButton = nil;
-	viewProgramCounter = nil;
-	imgProgramCounter = nil;
-	startLabel = nil;
-}
 
 @end

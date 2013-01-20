@@ -12,9 +12,6 @@
 
 @implementation ProgListVC
 
-@synthesize programsArray;
-@synthesize tableList;
-
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
@@ -27,9 +24,9 @@
 	self.navigationItem.backBarButtonItem = temporaryBarButtonItem;
 	
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-	NSString *documentsDirectory = [paths objectAtIndex:0];
+	NSString *documentsDirectory = paths[0];
 	NSString *pathDB = [documentsDirectory stringByAppendingPathComponent:@"DB.plist"];
-	programsArray = [[NSMutableArray alloc] initWithContentsOfFile:pathDB];	
+	self.programsArray = [[NSMutableArray alloc] initWithContentsOfFile:pathDB];
 	
 	UIBarButtonItem *addButton = [[UIBarButtonItem	alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addProgram)];
 	[self.navigationItem setRightBarButtonItem:addButton];
@@ -39,7 +36,7 @@
 	
 	UIBarButtonItem *buttonInfo = [[UIBarButtonItem alloc] initWithCustomView:infoButton];
 	[self.navigationItem setLeftBarButtonItem:buttonInfo];
-	tableList.separatorColor = [UIColor viewFlipsideBackgroundColor];
+	self.tableList.separatorColor = [UIColor viewFlipsideBackgroundColor];
 	
     [super viewDidLoad];
 }
@@ -67,7 +64,7 @@
 	pad.parent = self;
 	
 	// starting from 0, count saves the index of the new entry in the queue
-	pad.index = [programsArray count];
+	pad.index = [self.programsArray count];
 	pad.editMode = NO;
 	UINavigationController *navigation = [[UINavigationController alloc] initWithRootViewController:pad];
 	[self presentModalViewController:navigation animated:YES];
@@ -79,9 +76,9 @@
 {	
 	//store in the plist files
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-	NSString *documentsDirectory = [paths objectAtIndex:0];
+	NSString *documentsDirectory = paths[0];
 	NSString *pathDB = [documentsDirectory stringByAppendingPathComponent:@"DB.plist"];
-	[programsArray writeToFile:pathDB atomically:YES];
+	[self.programsArray writeToFile:pathDB atomically:YES];
 }
 
 #pragma mark - Table view data source
@@ -94,7 +91,7 @@
 - (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section
 {
-    return [programsArray count];
+    return [self.programsArray count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
@@ -107,8 +104,8 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     
-    cell.textLabel.text = [[programsArray objectAtIndex:indexPath.row] objectAtIndex:0];
-	cell.detailTextLabel.text = [[programsArray objectAtIndex:indexPath.row] objectAtIndex:1];
+    cell.textLabel.text = self.programsArray[indexPath.row][0];
+	cell.detailTextLabel.text = self.programsArray[indexPath.row][1];
 	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     return cell;
@@ -141,8 +138,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {	
 	if (editingStyle == UITableViewCellEditingStyleDelete) {
 		
-		[programsArray removeObjectAtIndex:indexPath.row];
-		[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
+		[self.programsArray removeObjectAtIndex:indexPath.row];
+		[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:YES];
 	}
 }
 
@@ -158,13 +155,4 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 	[self.navigationController pushViewController:pd animated:YES];
 }
 
-#pragma mark - Memory management
-
-- (void)viewDidUnload
-{
-    // Release any retained subviews of the main view.
-    tableList = nil;
-}
-
 @end
-

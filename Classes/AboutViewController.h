@@ -12,9 +12,7 @@
 @protocol AboutViewControllerDelegate;
 
 
-@interface AboutViewController : UIViewController {
-	id <AboutViewControllerDelegate> __unsafe_unretained delegate;
-}
+@interface AboutViewController : UIViewController
 
 - (IBAction)done;
 

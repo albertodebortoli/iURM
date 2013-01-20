@@ -12,10 +12,6 @@
 
 @interface InstrAddEditVC : UIViewController <UITextFieldDelegate> {
     
-	ProgDetailsVC *parent;
-	int index;
-	BOOL editMode;
-	
 	NSString *typeOfInstruction;
 	int argumentOne;
 	int argumentTwo;
@@ -38,7 +34,7 @@
 - (IBAction)saveButton;
 
 @property(nonatomic, strong) ProgDetailsVC *parent;
-@property(nonatomic) int index;
-@property(nonatomic) BOOL editMode;
+@property(nonatomic, unsafe_unretained) int index;
+@property(nonatomic, unsafe_unretained) BOOL editMode;
 
 @end

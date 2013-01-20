@@ -12,9 +12,6 @@
 
 @interface ExecVC : UIViewController <UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate> {
     
-	ProgDetailsVC *parent;
-	IBOutlet UIScrollView *scrollView;
-	IBOutlet UIPickerView *picker;
 	IBOutlet UILabel *lblProgramCounter;
 	IBOutlet UIButton *buttonForBackground;
 	IBOutlet UIButton *startButton;
@@ -52,7 +49,7 @@
 - (NSMutableArray *)calculateUsedRegisters;
 
 @property(nonatomic, strong) UIScrollView *scrollView;
-@property(nonatomic, strong) ProgDetailsVC *parent;
+@property(nonatomic, unsafe_unretained) ProgDetailsVC *parent;
 @property(nonatomic, strong) UIPickerView *picker;
 
 @end

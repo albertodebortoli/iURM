@@ -12,15 +12,11 @@
 
 @implementation InstrAddEditVC
 
-@synthesize parent;
-@synthesize index;
-@synthesize editMode;
-
 - (void)viewDidLoad
 {	
-	program = [parent.parent.programsArray objectAtIndex:parent.index];
+	program = (self.parent.parent.programsArray)[self.parent.index];
 	self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-    instructions = [program objectAtIndex:2];
+    instructions = program[2];
 	
 	UIBarButtonItem *dismissButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" 
 																	  style:UIBarButtonItemStylePlain 
@@ -37,12 +33,12 @@
 	[self.navigationItem setRightBarButtonItem:saveButton];
 	
 	// edit mode
-	if (editMode) {
+	if (self.editMode) {
 		[self setTitle:@"Modify Instruction"];
 		
-		typeOfInstruction = [[instructions objectAtIndex:index] objectAtIndex:0];
+		typeOfInstruction = instructions[self.index][0];
 		
-		argumentOne = [[[instructions objectAtIndex:index] objectAtIndex:1] intValue];
+		argumentOne = [instructions[self.index][1] intValue];
 		
 		if ([typeOfInstruction isEqualToString:@"Z"]) {
 			sgmTypeOfInstruction.selectedSegmentIndex = 0;
@@ -54,13 +50,13 @@
 		
 		if ([typeOfInstruction isEqualToString:@"T"]) {
 			sgmTypeOfInstruction.selectedSegmentIndex = 2;
-			argumentTwo = [[[instructions objectAtIndex:index] objectAtIndex:2] intValue];
+			argumentTwo = [instructions[self.index][2] intValue];
 		}
 		
 		if ([typeOfInstruction isEqualToString:@"J"]) {
 			sgmTypeOfInstruction.selectedSegmentIndex = 3;
-			argumentTwo = [[[instructions objectAtIndex:index] objectAtIndex:2] intValue];
-			argumentThree = [[[instructions objectAtIndex:index] objectAtIndex:3] intValue];
+			argumentTwo = [instructions[self.index][2] intValue];
+			argumentThree = [instructions[self.index][3] intValue];
 		}
 		
 		tfArgumentOne.text = [NSString stringWithFormat:@"%d", argumentOne];
@@ -196,53 +192,41 @@
 	argumentThree = [tfArgumentThree.text intValue];
 	NSMutableArray *newEntry;
 	
-	if (editMode)
-		[instructions removeObjectAtIndex:index];
+	if (self.editMode)
+		[instructions removeObjectAtIndex:self.index];
 	
 	if (sgmTypeOfInstruction.selectedSegmentIndex == 0) {
-		newEntry = [NSMutableArray arrayWithObjects: [NSString stringWithString:@"Z"],
-					[NSNumber numberWithInt:argumentOne], nil];
+		newEntry = [NSMutableArray arrayWithObjects: @"Z",
+					@(argumentOne), nil];
 		
-		[instructions insertObject:newEntry atIndex:index];
+		[instructions insertObject:newEntry atIndex:self.index];
 	}
 	
 	if (sgmTypeOfInstruction.selectedSegmentIndex == 1) {
-		newEntry = [NSMutableArray arrayWithObjects: [NSString stringWithString:@"S"],
-					[NSNumber numberWithInt:argumentOne], nil];
-		[instructions insertObject:newEntry atIndex:index];
+		newEntry = [NSMutableArray arrayWithObjects: @"S",
+					@(argumentOne), nil];
+		[instructions insertObject:newEntry atIndex:self.index];
 	}
 	
 	if (sgmTypeOfInstruction.selectedSegmentIndex == 2) {
-		newEntry = [NSMutableArray arrayWithObjects: [NSString stringWithString:@"T"],
-					[NSNumber numberWithInt:argumentOne],
-					[NSNumber numberWithInt:argumentTwo], nil];
+		newEntry = [NSMutableArray arrayWithObjects: @"T",
+					@(argumentOne),
+					@(argumentTwo), nil];
 		
-		[instructions insertObject:newEntry atIndex:index];
+		[instructions insertObject:newEntry atIndex:self.index];
 	}
 	
 	if (sgmTypeOfInstruction.selectedSegmentIndex == 3) {
-		newEntry = [NSMutableArray arrayWithObjects: [NSString stringWithString:@"J"],
-					[NSNumber numberWithInt:argumentOne],
-					[NSNumber numberWithInt:argumentTwo],
-					[NSNumber numberWithInt:argumentThree], nil];
+		newEntry = [NSMutableArray arrayWithObjects: @"J",
+					@(argumentOne),
+					@(argumentTwo),
+					@(argumentThree), nil];
 		
-		[instructions insertObject:newEntry atIndex:index];
+		[instructions insertObject:newEntry atIndex:self.index];
 	}
 	
 	[self.navigationController dismissModalViewControllerAnimated:YES];
-	[parent.tableInstructions reloadData];
-}
-
-#pragma mark - Memory management
-
-- (void)viewDidUnload {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    tfArgumentOne = nil;
-	tfArgumentTwo = nil;
-	tfArgumentThree = nil;
-	sgmTypeOfInstruction = nil;
-	lblInstuction = nil;
+	[self.parent.tableInstructions reloadData];
 }
 
 @end

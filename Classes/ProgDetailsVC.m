@@ -13,25 +13,21 @@
 
 @implementation ProgDetailsVC
 
-@synthesize parent;
-@synthesize index;
-@synthesize tableInstructions;
-
 - (void)viewDidLoad
 {	
-    [self setTitle:[[parent.programsArray objectAtIndex:index] objectAtIndex:0]];
+    [self setTitle:(self.parent.programsArray)[self.index][0]];
 	self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
 	
-	program = [parent.programsArray objectAtIndex:index];
-    instructions = [program objectAtIndex:2];
+	program = (self.parent.programsArray)[self.index];
+    instructions = program[2];
 	
-	lblDescription.text = [program objectAtIndex:1];
+	lblDescription.text = program[1];
 	
 	UIBarButtonItem *addButton = [[UIBarButtonItem	alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addInstruction)];
 	[self.navigationItem setRightBarButtonItem:addButton];
 	
-	[tableInstructions setEditing:YES animated:YES];
-	[tableInstructions setBackgroundColor:[UIColor clearColor]];
+	[self.tableInstructions setEditing:YES animated:YES];
+	[self.tableInstructions setBackgroundColor:[UIColor clearColor]];
 	
 	[runButton setImage:[UIImage imageNamed:@"runButton.png"] forState:UIControlStateNormal];
     [runButton setImage:[UIImage imageNamed:@"runButtonPush.png"] forState:UIControlStateHighlighted];
@@ -84,8 +80,8 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
 	
-    NSString *typeOfInstruction = [[instructions objectAtIndex:indexPath.row] objectAtIndex:0];
-	int argumentOne = [[[instructions objectAtIndex:indexPath.row] objectAtIndex:1] intValue];
+    NSString *typeOfInstruction = instructions[indexPath.row][0];
+	int argumentOne = [instructions[indexPath.row][1] intValue];
 	
 	if ([typeOfInstruction isEqualToString:@"Z"])
 		cell.textLabel.text = [NSString stringWithFormat:@"%@ (%d)", typeOfInstruction, argumentOne];
@@ -94,13 +90,13 @@
 		cell.textLabel.text = [NSString stringWithFormat:@"%@ (%d)", typeOfInstruction, argumentOne];
     
 	if ([typeOfInstruction isEqualToString:@"T"]) {
-		int argumentTwo = [[[instructions objectAtIndex:indexPath.row] objectAtIndex:2] intValue];
+		int argumentTwo = [instructions[indexPath.row][2] intValue];
 		cell.textLabel.text = [NSString stringWithFormat:@"%@ (%d, %d)", typeOfInstruction, argumentOne, argumentTwo];
 	}
     
 	if ([typeOfInstruction isEqualToString:@"J"]) {
-		int argumentTwo = [[[instructions objectAtIndex:indexPath.row] objectAtIndex:2] intValue];
-		int argumentThree = [[[instructions objectAtIndex:indexPath.row] objectAtIndex:3] intValue];
+		int argumentTwo = [instructions[indexPath.row][2] intValue];
+		int argumentThree = [instructions[indexPath.row][3] intValue];
 		cell.textLabel.text = [NSString stringWithFormat:@"%@ (%d, %d, %d)", typeOfInstruction, argumentOne, argumentTwo, argumentThree];
 	}
 	
@@ -128,7 +124,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {	
 	if (editingStyle == UITableViewCellEditingStyleDelete) {
 		[instructions removeObjectAtIndex:indexPath.row];
-		[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
+		[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:YES];
 	}
 }
 
@@ -142,7 +138,7 @@ canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 	  toIndexPath:(NSIndexPath *)toIndexPath
 {	
-    NSMutableArray *instructionToMove = [instructions objectAtIndex:fromIndexPath.row];
+    NSMutableArray *instructionToMove = instructions[fromIndexPath.row];
     [instructions removeObjectAtIndex:fromIndexPath.row];
     [instructions insertObject:instructionToMove atIndex:toIndexPath.row];
 }
@@ -158,17 +154,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 	iad.editMode = YES;
 	UINavigationController *navigation = [[UINavigationController alloc] initWithRootViewController:iad];
 	[self presentModalViewController:navigation animated:YES];
-}
-
-#pragma mark - Memory management
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    tableInstructions = nil;
-    lblDescription = nil;
-    runButton = nil;
 }
 
 @end
